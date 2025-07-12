@@ -1,0 +1,24 @@
+# Ignore Visual Studio temporary files, build results, and user-specific files
+.vs/
+*.user
+*.suo
+
+# Build results
+bin/
+obj/
+
+# Rider project files
+.idea/
+
+# User-specific files
+*.userosscache
+*.sln.docstates
+
+# ASP.NET temporary files
+**/wwwroot/node_modules/
+node_modules/
+
+# Logs
+*.log
+
+# Others you don’t want to commit
