@@ -10,6 +10,7 @@ namespace DevSpot.Services
         {
             _userManager = userManager;
         }
+
         public async Task<bool> RegisterUser(LoginUser user)
         {
             var identityUser = new IdentityUser
@@ -21,6 +22,14 @@ namespace DevSpot.Services
             var result = await _userManager.CreateAsync(identityUser, user.Password);
 
             return result.Succeeded;
+        }
+
+        public async Task<bool> Login(LoginUser user)
+        {
+            var identityUser = await _userManager.FindByEmailAsync(user.UserName);
+            if (identityUser == null)
+                return false;
+            return await _userManager.CheckPasswordAsync(identityUser, user.Password);
         }
     }
 }
