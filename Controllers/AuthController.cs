@@ -28,7 +28,11 @@ namespace DevSpot.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
             if (await _authService.Login(user))
-                return Ok("User Login Successfully!");
+            {
+                var tokenString = _authService.GenerateTokenString(user);
+                return Ok(tokenString);
+            }
+                
             else
                 return BadRequest();
         }

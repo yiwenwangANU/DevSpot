@@ -41,19 +41,19 @@ namespace DevSpot.Services
 
         public string GenerateTokenString(LoginUser user)
         {
-            IEnumerable<System.Security.Claims.Claim> claims = new List<Claim>
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.UserName),
                 new Claim(ClaimTypes.Role, "Admin"),
             };
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 claims:claims, 
                 expires: DateTime.Now.AddSeconds(60),
-                issuer:_config.GetSection("Jwt:Issuer").Value,
-                audience: _config.GetSection("Jwt:Audience").Value,
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
                 signingCredentials: signingCred
                 );
             string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
