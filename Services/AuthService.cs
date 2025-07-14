@@ -1,14 +1,21 @@
 ﻿using DevSpot.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace DevSpot.Services
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<IdentityUser> _userManager;
-        public AuthService(UserManager<IdentityUser> userManager)
+        private readonly IConfiguration _config;
+
+        public AuthService(UserManager<IdentityUser> userManager, IConfiguration config)
         {
             _userManager = userManager;
+            _config = config;
         }
 
         public async Task<bool> RegisterUser(LoginUser user)
@@ -30,6 +37,27 @@ namespace DevSpot.Services
             if (identityUser == null)
                 return false;
             return await _userManager.CheckPasswordAsync(identityUser, user.Password);
+        }
+
+        public string GenerateTokenString(LoginUser user)
+        {
+            IEnumerable<System.Security.Claims.Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.UserName),
+                new Claim(ClaimTypes.Role, "Admin"),
+            };
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
+            var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                claims:claims, 
+                expires: DateTime.Now.AddSeconds(60),
+                issuer:_config.GetSection("Jwt:Issuer").Value,
+                audience: _config.GetSection("Jwt:Audience").Value,
+                signingCredentials: signingCred
+                );
+            string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            return tokenString;
         }
     }
 }
