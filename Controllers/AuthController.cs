@@ -14,6 +14,7 @@ namespace DevSpot.Controllers
         {
             _authService = authService;
         }
+
         [HttpPost("Register")]
         public async Task<IActionResult>RegisterUser(LoginUser user)
         {
@@ -22,6 +23,7 @@ namespace DevSpot.Controllers
             else
                 return BadRequest("Something went wrong!");
         }
+
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginUser user) 
         {
