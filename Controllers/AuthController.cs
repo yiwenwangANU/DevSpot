@@ -32,7 +32,7 @@ namespace DevSpot.Controllers
             if (await _authService.Login(user))
             {
                 var tokenString = _authService.GenerateTokenString(user);
-                return Ok(tokenString);
+                return Ok(new { token = tokenString });
             }
                 
             else
