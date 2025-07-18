@@ -19,7 +19,7 @@ namespace DevSpot.Controllers
         public async Task<IActionResult>RegisterUser(LoginUser user)
         {
             if (await _authService.RegisterUser(user))
-                return Ok("Successfully Done!");
+                return Ok(new {message = "Successfully Done!"});
             else
                 return BadRequest("Something went wrong!");
         }
