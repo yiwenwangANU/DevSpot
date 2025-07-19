@@ -1,3 +1,4 @@
+using DevSpot.Constants;
 using DevSpot.Data;
 using DevSpot.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -78,17 +79,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Create a scope that run everytime the application start
+// Create a scope that run everytime the application start to seed roles
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-    if (!roleManager.RoleExistsAsync("Admin").Result)
-    {
-        var result = roleManager.CreateAsync(new IdentityRole("Admin")).Result;
-    }
+    RoleSeeder.SeedRoleAsync(services).Wait();
 }
+
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
