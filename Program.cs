@@ -23,15 +23,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Configure ASP.NET Core Identity for user and role management
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.Password.RequiredLength = 5;
-    options.Password.RequireDigit = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
+    options.Password.RequiredLength = 6;
     options.SignIn.RequireConfirmedAccount = false;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -82,6 +78,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Create a scope that run everytime the application start
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    if (!roleManager.RoleExistsAsync("Admin").Result)
+    {
+        var result = roleManager.CreateAsync(new IdentityRole("Admin")).Result;
+    }
+}
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);

@@ -10,7 +10,7 @@ namespace DevSpot.Controllers
     public class TestController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Get() 
+        public ActionResult Get() 
         {
             return Ok(new { secret = "U hit me"});
         }
