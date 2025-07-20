@@ -1,5 +1,7 @@
 using DevSpot.Constants;
 using DevSpot.Data;
+using DevSpot.Models;
+using DevSpot.Repositories;
 using DevSpot.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -69,6 +71,7 @@ builder.Services.AddCors(options =>
 
 // Register custom services (e.g., authentication service)
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IRepository<JobPosting>, JobPostingRepository>();
 
 var app = builder.Build();
 

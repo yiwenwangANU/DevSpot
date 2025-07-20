@@ -20,12 +20,12 @@ namespace DevSpot.Repositories
         public async Task DeleteAsync(string id)
         {
             var jobPosting = await _context.JobPostings.FindAsync(id);
-            if(jobPosting != null)
+            if (jobPosting == null) 
             {
-                _context.JobPostings.Remove(jobPosting); 
-                await _context.SaveChangesAsync();
+                throw new KeyNotFoundException();
             }
-            
+            _context.JobPostings.Remove(jobPosting); 
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<JobPosting>> GetAllAsync()
@@ -35,12 +35,18 @@ namespace DevSpot.Repositories
 
         public async Task<JobPosting> GetAsync(string id)
         {
-            return await _context.JobPostings.FindAsync(id);
+            var jobPosting =  await _context.JobPostings.FindAsync(id);
+            if( jobPosting == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            return jobPosting;
         }
 
-        public Task UpdateAsync(JobPosting entity)
-        {
-            throw new NotImplementedException();
+        public async Task UpdateAsync(JobPosting entity)
+        {   
+            _context.JobPostings.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }
