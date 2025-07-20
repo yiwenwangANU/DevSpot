@@ -25,7 +25,7 @@ namespace DevSpot.Tests
             var repository = new JobPostingRepository(db);
             var jobPosting = new JobPosting
             {
-                Title = "Test",
+                Title = "Test AddAsyn",
                 Description = "Test Dec",
                 PostedDate = DateTime.Now,
                 Company = "Test Company",
@@ -33,7 +33,7 @@ namespace DevSpot.Tests
                 UserId = "Test userId"
             };
             await repository.AddAsync(jobPosting);
-            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test");
+            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test AddAsyn");
             Assert.NotNull(result);
             Assert.Equal("Test Dec", result.Description);
         }
@@ -44,7 +44,7 @@ namespace DevSpot.Tests
             var repository = new JobPostingRepository(db);
             var jobPosting = new JobPosting
             {
-                Title = "Test",
+                Title = "Test GetAsync",
                 Description = "Test Dec",
                 PostedDate = DateTime.Now,
                 Company = "Test Company",
