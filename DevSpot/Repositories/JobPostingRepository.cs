@@ -17,7 +17,7 @@ namespace DevSpot.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
             var jobPosting = await _context.JobPostings.FindAsync(id);
             if (jobPosting == null) 
@@ -33,7 +33,7 @@ namespace DevSpot.Repositories
             return await _context.JobPostings.ToListAsync();
         }
 
-        public async Task<JobPosting> GetAsync(string id)
+        public async Task<JobPosting> GetAsync(int id)
         {
             var jobPosting =  await _context.JobPostings.FindAsync(id);
             if( jobPosting == null)
