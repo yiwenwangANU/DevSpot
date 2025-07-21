@@ -34,7 +34,7 @@ namespace DevSpot.Tests
                 UserId = "Test userId"
             };
             await repository.AddAsync(jobPosting);
-            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test AddAsyn");
+            var result = await db.JobPostings.SingleOrDefaultAsync(x => x.Title == "Test AddAsyn");
             Assert.NotNull(result);
             Assert.Equal("Test Dec", result.Description);
         }
@@ -126,7 +126,7 @@ namespace DevSpot.Tests
 
             jobPosting.Description = "new description";
             await repository.UpdateAsync(jobPosting);
-            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test UpdateAsync");
+            var result = await db.JobPostings.SingleOrDefaultAsync(x => x.Title == "Test UpdateAsync");
             Assert.NotNull(result);
             Assert.Equal("new description", result.Description);
         }
@@ -151,7 +151,7 @@ namespace DevSpot.Tests
 
             await repository.DeleteAsync(jobPosting.Id);
 
-            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test DeleteAsync");
+            var result = await db.JobPostings.SingleOrDefaultAsync(x => x.Title == "Test DeleteAsync");
             Assert.Null(result);
         }
     }

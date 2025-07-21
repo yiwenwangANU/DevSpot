@@ -24,7 +24,7 @@ namespace DevSpot.Repositories
             {
                 throw new KeyNotFoundException();
             }
-            _context.JobPostings.Remove(jobPosting); 
+            _context.JobPostings.Remove(jobPosting);  
             await _context.SaveChangesAsync();
         }
 
