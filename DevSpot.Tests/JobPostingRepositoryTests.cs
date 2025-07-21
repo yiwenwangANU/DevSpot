@@ -3,6 +3,7 @@ using DevSpot.Models;
 using DevSpot.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace DevSpot.Tests
@@ -68,6 +69,76 @@ namespace DevSpot.Tests
             await Assert.ThrowsAsync<KeyNotFoundException>(
                 () => repository.GetAsync(999)
             );
+        }
+        [Fact]
+        public async Task GetAllAsync_ShouldReturnAllJobPostings()
+        {
+            var db = CreateDbContext();
+            db.JobPostings.RemoveRange(db.JobPostings);
+            await db.SaveChangesAsync();
+            var repository = new JobPostingRepository(db);
+            var jobPosting1 = new JobPosting
+            {
+                Title = "Test GetAllAsync 1",
+                Description = "Test Dec 1",
+                PostedDate = DateTime.Now,
+                Company = "Test Company 1",
+                Location = "Test Location 1",
+                UserId = "Test userId 1"
+            };
+            var jobPosting2 = new JobPosting
+            {
+                Title = "Test GetAllAsync 2",
+                Description = "Test Dec 2",
+                PostedDate = DateTime.Now,
+                Company = "Test Company 2",
+                Location = "Test Location 2",
+                UserId = "Test userId 2"
+            };
+
+            var jobPostings = new List<JobPosting> { jobPosting1, jobPosting2 };
+            await db.JobPostings.AddRangeAsync(jobPostings);
+            await db.SaveChangesAsync();
+
+            var result = await repository.GetAllAsync();
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+            Assert.Collection(result,
+                item =>
+                {
+                    Assert.Equal("Test GetAllAsync 1", item.Title);
+                    Assert.Equal("Test Dec 1", item.Description);
+                },
+                item =>
+                {
+                    Assert.Equal("Test GetAllAsync 2", item.Title);
+                    Assert.Equal("Test Dec 2", item.Description);
+                });
+        }
+        [Fact]
+        public async Task UpdateAsync_ShouldUpdateJobPosting()
+        {
+            var db = CreateDbContext();
+            var repository = new JobPostingRepository(db);
+            var jobPosting = new JobPosting
+            {
+                Title = "Test UpdateAsync",
+                Description = "Test Dec 01",
+                PostedDate = DateTime.Now,
+                Company = "Test Company",
+                Location = "Test Location",
+                UserId = "Test userId"
+            };
+
+            await db.JobPostings.AddAsync(jobPosting);
+            await db.SaveChangesAsync();
+
+            jobPosting.Description = "new description";
+            await repository.UpdateAsync(jobPosting);
+            await db.SaveChangesAsync();
+            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test UpdateAsync");
+            Assert.NotNull(result);
+            Assert.Equal("new description", result.Description);
         }
     }
 }
