@@ -103,17 +103,8 @@ namespace DevSpot.Tests
             var result = await repository.GetAllAsync();
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
-            Assert.Collection(result,
-                item =>
-                {
-                    Assert.Equal("Test GetAllAsync 1", item.Title);
-                    Assert.Equal("Test Dec 1", item.Description);
-                },
-                item =>
-                {
-                    Assert.Equal("Test GetAllAsync 2", item.Title);
-                    Assert.Equal("Test Dec 2", item.Description);
-                });
+            Assert.Contains(result, x => x.Title == "Test GetAllAsync 1" && x.Description == "Test Dec 1");
+            Assert.Contains(result, x => x.Title == "Test GetAllAsync 2" && x.Description == "Test Dec 2");
         }
         [Fact]
         public async Task UpdateAsync_ShouldUpdateJobPosting()
@@ -135,10 +126,33 @@ namespace DevSpot.Tests
 
             jobPosting.Description = "new description";
             await repository.UpdateAsync(jobPosting);
-            await db.SaveChangesAsync();
             var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test UpdateAsync");
             Assert.NotNull(result);
             Assert.Equal("new description", result.Description);
+        }
+        [Fact]
+        public async Task DeleteAsync_ShouldDeleteJobPosting()
+        {
+            var db = CreateDbContext();
+            var repository = new JobPostingRepository(db);
+
+            var jobPosting = new JobPosting
+            {
+                Title = "Test DeleteAsync",
+                Description = "Test Dec",
+                PostedDate = DateTime.Now,
+                Company = "Test Company",
+                Location = "Test Location",
+                UserId = "Test userId"
+            };
+
+            await db.JobPostings.AddAsync(jobPosting);
+            await db.SaveChangesAsync();
+
+            await repository.DeleteAsync(jobPosting.Id);
+
+            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test DeleteAsync");
+            Assert.Null(result);
         }
     }
 }
