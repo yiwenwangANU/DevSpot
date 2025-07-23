@@ -1,9 +1,7 @@
-﻿using DevSpot.Models;
-using DevSpot.Models.Dtos;
+﻿using DevSpot.Models.Dtos;
 using DevSpot.Models.Entities;
 using DevSpot.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
@@ -26,16 +24,16 @@ namespace DevSpot.Controllers
         }
         [Authorize]
         [HttpPost("createPosting")]
-        public async Task<IActionResult> createPosting(JobPostingDto jobPostingDto)
+        public async Task<IActionResult> createPosting(JobPostingDto dto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) { return Unauthorized(); }
             var entity = new JobPosting
             {
-                Title = jobPostingDto.Title,
-                Description = jobPostingDto.Description,
-                Location = jobPostingDto.Location,
-                Company = jobPostingDto.Company,
+                Title = dto.Title,
+                Description = dto.Description,
+                Location = dto.Location,
+                Company = dto.Company,
                 UserId = userId
             };
             await _repository.AddAsync(entity);
@@ -53,6 +51,12 @@ namespace DevSpot.Controllers
             var jobPosting = await _repository.GetAsync(id);
             if (jobPosting == null) return NotFound();
             return Ok(new { jobPosting });
+        }
+        [HttpDelete("deletePosting/{id}")]
+        public async Task<IActionResult> DeletePostingById(int id)
+        {
+            var jobPosting = await _repository.GetAllAsync(id);
+
         }
     }
 }

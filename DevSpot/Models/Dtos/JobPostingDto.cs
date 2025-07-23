@@ -4,7 +4,8 @@ namespace DevSpot.Models.Dtos
 {
     public class JobPostingDto
     {
-        [Required]
+        [Required(ErrorMessage = "Title is required.")]
+        [MinLength(1, ErrorMessage = "Title cannot be empty.")]
         public required string Title { get; set; }
         [Required]
         public required string Description { get; set; }

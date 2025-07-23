@@ -27,12 +27,10 @@ namespace DevSpot.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDto dto) 
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
             var token = await _authService.Login(dto);
             if (token != null)
             {
-                return Ok(new { token=token, userName=dto.Email });
+                return Ok(new { token, userName=dto.Email });
             } 
             return Unauthorized();
         }
