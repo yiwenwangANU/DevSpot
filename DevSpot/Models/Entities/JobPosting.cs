@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DevSpot.Models
+namespace DevSpot.Models.Entities
 {
     public class JobPosting
     {

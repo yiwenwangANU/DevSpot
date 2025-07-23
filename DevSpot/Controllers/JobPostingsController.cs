@@ -29,7 +29,7 @@ namespace DevSpot.Controllers
         public async Task<IActionResult> createPosting(JobPostingDto jobPostingDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) { return BadRequest()};
+            if (userId == null) { return Unauthorized(); }
             var entity = new JobPosting
             {
                 Title = jobPostingDto.Title,
@@ -38,7 +38,8 @@ namespace DevSpot.Controllers
                 Company = jobPostingDto.Company,
                 UserId = userId
             };
-            await _repository.AddAsync(JobPosting entity)
+            await _repository.AddAsync(entity);
+            return Ok(entity);
         }
         [HttpGet("getPostings")]
         public async Task<IActionResult> GetPostings()

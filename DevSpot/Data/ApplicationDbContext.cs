@@ -1,5 +1,4 @@
-﻿using DevSpot.Models;
-using DevSpot.Models.Entities;
+﻿using DevSpot.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

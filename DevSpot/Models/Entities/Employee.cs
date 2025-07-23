@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DevSpot.Models
+namespace DevSpot.Models.Entities
 {
     public class Employee
     {

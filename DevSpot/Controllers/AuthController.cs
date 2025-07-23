@@ -1,4 +1,4 @@
-﻿using DevSpot.Models;
+﻿using DevSpot.Models.Dtos;
 using DevSpot.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ namespace DevSpot.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult>RegisterUser(LoginUser user)
+        public async Task<IActionResult>RegisterUser(LoginUserDto user)
         {
             if (await _authService.RegisterUser(user))
                 return Ok(new {message = "Successfully Done!"});
@@ -25,7 +25,7 @@ namespace DevSpot.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginUser user) 
+        public async Task<IActionResult> Login(LoginUserDto user) 
         {
             if (!ModelState.IsValid)
                 return BadRequest();

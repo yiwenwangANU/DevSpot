@@ -18,12 +18,12 @@ namespace DevSpot.Services
             _config = config;
         }
 
-        public async Task<bool> RegisterUser(LoginUser user)
+        public async Task<bool> RegisterUser(LoginDto user)
         {
             var identityUser = new IdentityUser
             {
-                UserName = user.UserName,
-                Email = user.UserName
+                UserName = user.Email,
+                Email = user.Email
             };
 
             var result = await _userManager.CreateAsync(identityUser, user.Password);
@@ -31,19 +31,19 @@ namespace DevSpot.Services
             return result.Succeeded;
         }
 
-        public async Task<bool> Login(LoginUser user)
+        public async Task<bool> Login(LoginDto dto)
         {
-            var identityUser = await _userManager.FindByEmailAsync(user.UserName);
-            if (identityUser == null)
-                return false;
-            return await _userManager.CheckPasswordAsync(identityUser, user.Password);
+            var identityUser = await _userManager.FindByEmailAsync(dto.Email);
+            if (identityUser == null || !await _userManager.CheckPasswordAsync(identityUser, dto.Password))
+                return null;
+            return GenerateTokenString(identityUser);
         }
 
-        public string GenerateTokenString(LoginUser user)
+        public string GenerateTokenString(IdentityUser user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Role, "Admin"),
             };
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

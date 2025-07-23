@@ -1,5 +1,5 @@
 ﻿using DevSpot.Data;
-using DevSpot.Models;
+using DevSpot.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevSpot.Repositories
