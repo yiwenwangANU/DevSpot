@@ -31,7 +31,7 @@ namespace DevSpot.Services
             return result.Succeeded;
         }
 
-        public async Task<bool> Login(LoginDto dto)
+        public async Task<string?> Login(LoginDto dto)
         {
             var identityUser = await _userManager.FindByEmailAsync(dto.Email);
             if (identityUser == null || !await _userManager.CheckPasswordAsync(identityUser, dto.Password))

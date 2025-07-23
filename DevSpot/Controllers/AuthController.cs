@@ -16,27 +16,25 @@ namespace DevSpot.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult>RegisterUser(LoginUserDto user)
+        public async Task<IActionResult>RegisterUser(LoginDto dto)
         {
-            if (await _authService.RegisterUser(user))
+            if (await _authService.RegisterUser(dto))
                 return Ok(new {message = "Successfully Done!"});
             else
                 return BadRequest("Something went wrong!");
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginUserDto user) 
+        public async Task<IActionResult> Login(LoginDto dto) 
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            if (await _authService.Login(user))
+            var token = await _authService.Login(dto);
+            if (token != null)
             {
-                var tokenString = _authService.GenerateTokenString(user);
-                return Ok(new { token = tokenString, userName= user.UserName });
-            }
-                
-            else
-                return BadRequest();
+                return Ok(new { token=token, userName=dto.Email });
+            } 
+            return Unauthorized();
         }
     }
 }

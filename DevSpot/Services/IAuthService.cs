@@ -1,11 +1,12 @@
 ﻿using DevSpot.Models.Dtos;
+using Microsoft.AspNetCore.Identity;
 
 namespace DevSpot.Services
 {
     public interface IAuthService
     {
-        string GenerateTokenString(LoginUserDto user);
-        Task<bool> RegisterUser(LoginUserDto user);
-        Task<bool> Login(LoginUserDto user);
+        string GenerateTokenString(IdentityUser user);
+        Task<bool> RegisterUser(LoginDto user);
+        Task<string?> Login(LoginDto user);
     }
 }
