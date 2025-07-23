@@ -20,6 +20,11 @@ namespace DevSpot.Controllers
             _repository = repository;
             _userManager = userManager;
         }
+        [HttpPost("creatPosting")]
+        public async Task<IActionResult> createPosting()
+        {
+            return NotFound();
+        }
         [HttpGet("getPostings")]
         public async Task<IActionResult> GetPostings()
         {

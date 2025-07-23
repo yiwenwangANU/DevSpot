@@ -1,6 +1,6 @@
 using DevSpot.Constants;
 using DevSpot.Data;
-using DevSpot.Models;
+using DevSpot.Models.Entities;
 using DevSpot.Repositories;
 using DevSpot.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

@@ -1,4 +1,4 @@
-﻿using DevSpot.Models;
+﻿using DevSpot.Models.Dtos;
 
 namespace DevSpot.Services
 {

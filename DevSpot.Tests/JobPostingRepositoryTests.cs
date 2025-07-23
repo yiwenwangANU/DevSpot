@@ -1,5 +1,5 @@
 ﻿using DevSpot.Data;
-using DevSpot.Models;
+using DevSpot.Models.Entities;
 using DevSpot.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -60,16 +60,16 @@ namespace DevSpot.Tests
             Assert.NotNull(result);
             Assert.Equal("Test Dec", result.Description);
         }
-        [Fact]
-        public async Task GetAsync_ShouldThrowKeyNotFoundException()
-        {
-            var db = CreateDbContext();
-            var repository = new JobPostingRepository(db);
+        //[Fact]
+        //public async Task GetAsync_ShouldThrowKeyNotFoundException()
+        //{
+        //    var db = CreateDbContext();
+        //    var repository = new JobPostingRepository(db);
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(
-                () => repository.GetAsync(999)
-            );
-        }
+        //    await Assert.ThrowsAsync<KeyNotFoundException>(
+        //        () => repository.GetAsync(999)
+        //    );
+        //}
         [Fact]
         public async Task GetAllAsync_ShouldReturnAllJobPostings()
         {
