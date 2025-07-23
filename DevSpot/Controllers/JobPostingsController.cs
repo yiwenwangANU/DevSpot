@@ -1,9 +1,13 @@
 ﻿using DevSpot.Models;
+using DevSpot.Models.Dtos;
+using DevSpot.Models.Entities;
 using DevSpot.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
+using System.Security.Claims;
 
 namespace DevSpot.Controllers
 {
@@ -20,10 +24,21 @@ namespace DevSpot.Controllers
             _repository = repository;
             _userManager = userManager;
         }
-        [HttpPost("creatPosting")]
-        public async Task<IActionResult> createPosting()
+        [Authorize]
+        [HttpPost("createPosting")]
+        public async Task<IActionResult> createPosting(JobPostingDto jobPostingDto)
         {
-            return NotFound();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) { return BadRequest()};
+            var entity = new JobPosting
+            {
+                Title = jobPostingDto.Title,
+                Description = jobPostingDto.Description,
+                Location = jobPostingDto.Location,
+                Company = jobPostingDto.Company,
+                UserId = userId
+            };
+            await _repository.AddAsync(JobPosting entity)
         }
         [HttpGet("getPostings")]
         public async Task<IActionResult> GetPostings()
