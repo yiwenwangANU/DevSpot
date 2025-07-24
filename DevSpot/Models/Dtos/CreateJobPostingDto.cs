@@ -2,7 +2,7 @@
 
 namespace DevSpot.Models.Dtos
 {
-    public class JobPostingDto
+    public class CreateJobPostingDto
     {
         [Required(ErrorMessage = "Title is required.")]
         [MinLength(1, ErrorMessage = "Title cannot be empty.")]

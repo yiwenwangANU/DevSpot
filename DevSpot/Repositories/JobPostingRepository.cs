@@ -1,10 +1,11 @@
 ﻿using DevSpot.Data;
+using DevSpot.Models.Dtos;
 using DevSpot.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevSpot.Repositories
 {
-    public class JobPostingRepository : IRepository<JobPosting>
+    public class JobPostingRepository 
     {
         private readonly ApplicationDbContext _context;
         public JobPostingRepository(ApplicationDbContext context)
@@ -31,7 +32,7 @@ namespace DevSpot.Repositories
             return await _context.JobPostings.ToListAsync();
         }
 
-        public async Task<JobPosting> GetById(int id)
+        public async Task<JobPosting?> GetById(int id)
         {
             return await _context.JobPostings.FindAsync(id);
         }
