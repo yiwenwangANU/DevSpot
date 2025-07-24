@@ -11,13 +11,13 @@ namespace DevSpot.Repositories
         {
             _context = context;
         }
-        public async Task AddAsync(JobPosting entity)
+        public async Task Add(JobPosting entity)
         {
             await _context.JobPostings.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task Delete(int id)
         {
             var jobPosting = await _context.JobPostings.FindAsync(id);
             if (jobPosting == null) return;
@@ -26,17 +26,17 @@ namespace DevSpot.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<JobPosting>> GetAllAsync()
+        public async Task<IEnumerable<JobPosting>> GetAll()
         {
             return await _context.JobPostings.ToListAsync();
         }
 
-        public async Task<JobPosting> GetAsync(int id)
+        public async Task<JobPosting> GetById(int id)
         {
             return await _context.JobPostings.FindAsync(id);
         }
 
-        public async Task UpdateAsync(JobPosting entity)
+        public async Task Update(JobPosting entity)
         {   
             _context.JobPostings.Update(entity);
             await _context.SaveChangesAsync();
