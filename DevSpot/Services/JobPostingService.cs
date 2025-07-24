@@ -9,12 +9,10 @@ namespace DevSpot.Services
 {
     public class JobPostingService : IJobPostingService
     {
-        private readonly IRepository<JobPostingRepository> _repository;
-        private readonly ApplicationDbContext _context;
-        public JobPostingService(IRepository<JobPostingRepository> repository, ApplicationDbContext context)
+        private readonly IRepository _repository;
+        public JobPostingService(IRepository repository)
         {
             _repository = repository;
-            _context = context;
         }
         public async Task<JobPostingResponseDto> CreateNewPosting(CreateJobPostingDto dto, string userId)
         {
@@ -28,19 +26,7 @@ namespace DevSpot.Services
                 UserId = userId
             };
             await _repository.Add(entity);
-            var response = await _context.JobPostings
-            .Include(j => j.User)
-            .Where(j => j.Id == entity.Id)
-            .Select(j => new JobPostingResponseDto
-            {
-                Title = j.Title,
-                Description = j.Description,
-                Location = j.Location,
-                Company = j.Company,
-                PostedDate = j.PostedDate,
-                UserName = j.User!.UserName!
-            })
-            .FirstOrDefaultAsync();
+            var response = await _repository.GetByIdWithUserName(entity.Id);
 
             return response == null ? throw new Exception("Job posting could not be retrieved after creation.") : response;
         }
@@ -52,30 +38,26 @@ namespace DevSpot.Services
 
         public async Task<IEnumerable<JobPostingResponseDto>> GetAllPostings()
         {
-            var postings = await _context.JobPostings
-        .Include(j => j.User)
-        .Select(j => new JobPostingResponseDto
-        {
-            Title = j.Title,
-            Description = j.Description,
-            Location = j.Location,
-            Company = j.Company,
-            PostedDate = j.PostedDate,
-            UserName = j.User != null ? j.User.UserName! : "Unknown"
-        })
-        .ToListAsync();
-
-            return postings;
+            return await _repository.GetAllWithUserName();
         }
 
-        public Task<JobPostingResponseDto> GetPostingById(int id)
+        public async Task<JobPostingResponseDto> GetPostingById(int id)
         {
-            throw new NotImplementedException();
+            var response = await _repository.GetByIdWithUserName(id);
+            return response == null ? throw new Exception("Job posting could not be retrieved.") : response;
         }
 
-        public Task UpdatePosting(CreateJobPostingDto entity)
+        public async Task UpdatePosting(CreateJobPostingDto dto, string userId)
         {
-            throw new NotImplementedException();
+            var entity = new JobPosting
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                Location = dto.Location,
+                Company = dto.Company,
+                UserId = userId
+            };
+            await _repository.Update(entity);
         }
     }
 }
