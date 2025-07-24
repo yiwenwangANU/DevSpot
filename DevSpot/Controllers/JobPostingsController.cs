@@ -55,8 +55,10 @@ namespace DevSpot.Controllers
         [HttpDelete("deletePosting/{id}")]
         public async Task<IActionResult> DeletePostingById(int id)
         {
-            var jobPosting = await _repository.GetAllAsync(id);
-
+            var jobPosting = await _repository.GetAsync(id);
+            if(jobPosting == null) return NotFound();
+            await _repository.DeleteAsync(id);
+            return NoContent();
         }
     }
 }
