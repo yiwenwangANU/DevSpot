@@ -37,6 +37,7 @@ namespace DevSpot.Repositories
                 .Include(j => j.User)
                 .Select(j => new JobPostingResponseDto
                 {
+                    Id = j.Id,
                     Title = j.Title,
                     Description = j.Description,
                     Location = j.Location,
@@ -58,6 +59,7 @@ namespace DevSpot.Repositories
                 .Where(j => j.Id == id)
                 .Select(j => new JobPostingResponseDto
                 {
+                    Id = j.Id,
                     Title = j.Title,
                     Description = j.Description,
                     Location = j.Location,
