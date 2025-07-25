@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DevSpot.Repositories
 {
-    public class JobPostingRepository 
+    public class JobPostingRepository : IRepository
     {
         private readonly ApplicationDbContext _context;
         public JobPostingRepository(ApplicationDbContext context)

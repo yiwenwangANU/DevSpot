@@ -3,6 +3,7 @@ using DevSpot.Models.Dtos;
 using DevSpot.Models.Entities;
 using DevSpot.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace DevSpot.Services
@@ -31,9 +32,18 @@ namespace DevSpot.Services
             return response == null ? throw new Exception("Job posting could not be retrieved after creation.") : response;
         }
 
-        public async Task DeletePostingById(int id)
+        public async Task<bool> DeletePostingById(int id,  string userId)
         {
+            var posting = await _repository.GetById(id);
+            if (posting == null) { 
+                throw new KeyNotFoundException("Job Posting not found.");
+            }
+            if (posting.UserId != userId) 
+            {
+                return false;
+            }
             await _repository.Delete(id);
+            return true;
         }
 
         public async Task<IEnumerable<JobPostingResponseDto>> GetAllPostings()

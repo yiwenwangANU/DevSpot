@@ -65,8 +65,8 @@ namespace DevSpot.Controllers
 
             var jobPosting = await _service.GetPostingById(id);
             if(jobPosting == null) return NotFound();
-            await _service.DeletePostingById(id);
-            return NoContent();
+            var success = await _service.DeletePostingById(id, userId);
+            return success ? NoContent() : Forbid();
         }
     }
 }

@@ -71,7 +71,8 @@ builder.Services.AddCors(options =>
 
 // Register custom services (e.g., authentication service)
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IRepository<JobPosting>, JobPostingRepository>();
+builder.Services.AddScoped<IJobPostingService, JobPostingService>();
+builder.Services.AddScoped<IRepository, JobPostingRepository>();
 
 var app = builder.Build();
 
