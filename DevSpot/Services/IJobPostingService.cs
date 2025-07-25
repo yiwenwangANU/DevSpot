@@ -2,8 +2,12 @@
 
 namespace DevSpot.Services
 {
-    public interface IJobPostingService
+    public interface IJobPostingService 
     {
-        Task<T> CreateNewPost(CreateJobPostingDto);
+        Task<JobPostingResponseDto> CreateNewPosting(CreateJobPostingDto dto, string userId);
+        Task<IEnumerable<JobPostingResponseDto>> GetAllPostings();
+        Task<JobPostingResponseDto> GetPostingById(int id);
+        Task DeletePostingById(int id);
+        Task<bool> UpdatePosting(CreateJobPostingDto dto, int id, string userId);
     }
 }

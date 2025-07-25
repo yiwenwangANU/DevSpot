@@ -31,10 +31,41 @@ namespace DevSpot.Repositories
         {
             return await _context.JobPostings.ToListAsync();
         }
-
+        public async Task<IEnumerable<JobPostingResponseDto>> GetAllWithUserName()
+        {
+            return await _context.JobPostings
+                .Include(j => j.User)
+                .Select(j => new JobPostingResponseDto
+                {
+                    Title = j.Title,
+                    Description = j.Description,
+                    Location = j.Location,
+                    Company = j.Company,
+                    PostedDate = j.PostedDate,
+                    UserName = j.User != null ? j.User.UserName! : "Unknown"
+                })
+                .ToListAsync();
+        }
         public async Task<JobPosting?> GetById(int id)
         {
             return await _context.JobPostings.FindAsync(id);
+        }
+
+        public async Task<JobPostingResponseDto?> GetByIdWithUserName(int id)
+        {
+            return await _context.JobPostings
+                .Include(j => j.User)
+                .Where(j => j.Id == id)
+                .Select(j => new JobPostingResponseDto
+                {
+                    Title = j.Title,
+                    Description = j.Description,
+                    Location = j.Location,
+                    Company = j.Company,
+                    PostedDate = j.PostedDate,
+                    UserName = j.User != null ? j.User.UserName! : "Unknown"
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task Update(JobPosting entity)

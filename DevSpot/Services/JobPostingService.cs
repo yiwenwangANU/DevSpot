@@ -47,17 +47,23 @@ namespace DevSpot.Services
             return response == null ? throw new Exception("Job posting could not be retrieved.") : response;
         }
 
-        public async Task UpdatePosting(CreateJobPostingDto dto, string userId)
+        public async Task<bool> UpdatePosting(CreateJobPostingDto dto, int id, string userId)
         {
-            var entity = new JobPosting
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                Location = dto.Location,
-                Company = dto.Company,
-                UserId = userId
-            };
-            await _repository.Update(entity);
+            var posting = await _repository.GetById(id);
+            if (posting == null)
+                throw new KeyNotFoundException("Job posting not found.");
+
+            if (posting.UserId != userId)
+                return false;
+
+            // update fields
+            posting.Title = dto.Title;
+            posting.Description = dto.Description;
+            posting.Company = dto.Company;
+            posting.Location = dto.Location;
+
+            await _repository.Update(posting);
+            return true;
         }
     }
 }

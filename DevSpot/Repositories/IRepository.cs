@@ -1,11 +1,17 @@
-﻿namespace DevSpot.Repositories
+﻿using DevSpot.Models.Dtos;
+using DevSpot.Models.Entities;
+
+namespace DevSpot.Repositories
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetAsync(int id);
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(int id);
+        Task<IEnumerable<JobPosting>> GetAll();
+        Task<IEnumerable<JobPostingResponseDto>> GetAllWithUserName();
+        Task<JobPosting?> GetById(int id);
+        Task<JobPostingResponseDto?> GetByIdWithUserName(int id);
+        Task Add(JobPosting entity);
+        Task Update(JobPosting entity);
+        Task Delete(int id);
+        
     }
 }
