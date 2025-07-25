@@ -32,11 +32,11 @@ namespace DevSpot.Services
             return response == null ? throw new Exception("Job posting could not be retrieved after creation.") : response;
         }
 
-        public async Task<bool> DeletePostingById(int id,  string userId)
+        public async Task<bool?> DeletePostingById(int id,  string userId)
         {
             var posting = await _repository.GetById(id);
-            if (posting == null) { 
-                throw new KeyNotFoundException("Job Posting not found.");
+            if (posting == null) {
+                return null;
             }
             if (posting.UserId != userId) 
             {
@@ -51,17 +51,16 @@ namespace DevSpot.Services
             return await _repository.GetAllWithUserName();
         }
 
-        public async Task<JobPostingResponseDto> GetPostingById(int id)
+        public async Task<JobPostingResponseDto?> GetPostingById(int id)
         {
-            var response = await _repository.GetByIdWithUserName(id);
-            return response == null ? throw new Exception("Job posting could not be retrieved.") : response;
+            return await _repository.GetByIdWithUserName(id);
         }
 
-        public async Task<bool> UpdatePosting(CreateJobPostingDto dto, int id, string userId)
+        public async Task<bool?> UpdatePosting(CreateJobPostingDto dto, int id, string userId)
         {
             var posting = await _repository.GetById(id);
             if (posting == null)
-                throw new KeyNotFoundException("Job posting not found.");
+                return null;
 
             if (posting.UserId != userId)
                 return false;

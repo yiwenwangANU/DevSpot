@@ -1,4 +1,5 @@
 ﻿using DevSpot.Models.Dtos;
+using DevSpot.Models.Entities;
 using DevSpot.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -54,7 +55,7 @@ namespace DevSpot.Controllers
             if (userId == null) { return Unauthorized(); }
 
             var success = await _service.UpdatePosting(dto, id, userId);
-            return success ? Ok() : Forbid();
+            return success == null ? NotFound() : success == true ? Ok() : Forbid();
         }
         [Authorize]
         [HttpDelete("deletePosting/{id}")]
@@ -62,11 +63,8 @@ namespace DevSpot.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) { return Unauthorized(); }
-
-            var jobPosting = await _service.GetPostingById(id);
-            if(jobPosting == null) return NotFound();
             var success = await _service.DeletePostingById(id, userId);
-            return success ? NoContent() : Forbid();
+            return success == null ? NotFound() : success == true ? NoContent() : Forbid();
         }
     }
 }
