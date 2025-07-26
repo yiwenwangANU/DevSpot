@@ -21,7 +21,7 @@ namespace DevSpot.Controllers
             _service = service;
             _userManager = userManager;
         }
-        [Authorize]
+        [Authorize(Roles ="Admin, Employer")]
         [HttpPost("createPosting")]
         public async Task<IActionResult> createPosting(CreateJobPostingDto dto)
         {

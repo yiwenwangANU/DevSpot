@@ -1,7 +1,8 @@
-﻿using DevSpot.Models.Dtos;
-using DevSpot.Constants;
+﻿using DevSpot.Constants;
+using DevSpot.Models.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -44,16 +45,18 @@ namespace DevSpot.Services
             var identityUser = await _userManager.FindByEmailAsync(dto.Email);
             if (identityUser == null || !await _userManager.CheckPasswordAsync(identityUser, dto.Password))
                 return null;
-            return GenerateTokenString(identityUser);
+            var userRoles = await _userManager.GetRolesAsync(identityUser);
+            return GenerateTokenString(identityUser, userRoles);
         }
 
-        public string GenerateTokenString(IdentityUser user)
+        public string GenerateTokenString(IdentityUser user, IList<string> userRoles)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Role, "Admin"),
             };
+            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
