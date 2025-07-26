@@ -16,7 +16,7 @@ namespace DevSpot.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult>RegisterUser(LoginDto dto)
+        public async Task<IActionResult>RegisterUser(RegisterDto dto)
         {
             if (await _authService.RegisterUser(dto))
                 return Ok(new {message = "Successfully Done!"});

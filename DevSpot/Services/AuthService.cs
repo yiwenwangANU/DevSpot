@@ -1,4 +1,5 @@
 ﻿using DevSpot.Models.Dtos;
+using DevSpot.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,17 +19,24 @@ namespace DevSpot.Services
             _config = config;
         }
 
-        public async Task<bool> RegisterUser(LoginDto user)
+        public async Task<bool> RegisterUser(RegisterDto dto)
         {
             var identityUser = new IdentityUser
             {
-                UserName = user.Email,
-                Email = user.Email
+                UserName = dto.Email,
+                Email = dto.Email
             };
 
-            var result = await _userManager.CreateAsync(identityUser, user.Password);
+            var result = await _userManager.CreateAsync(identityUser, dto.Password);
+            if (!result.Succeeded)
+                return false;
 
-            return result.Succeeded;
+            var role = dto.IsJobSeeker ? Roles.JOB_SEEKER : Roles.ADMIN;
+            var roleResult = await _userManager.AddToRoleAsync(identityUser, role);
+            if (!roleResult.Succeeded)
+                return false;
+
+            return true;
         }
 
         public async Task<string?> Login(LoginDto dto)
