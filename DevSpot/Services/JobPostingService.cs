@@ -2,9 +2,7 @@
 using DevSpot.Models.Dtos;
 using DevSpot.Models.Entities;
 using DevSpot.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System.Globalization;
-using System.Security.Claims;
+
 
 namespace DevSpot.Services
 {

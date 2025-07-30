@@ -32,7 +32,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Configure JWT Authentication
+//Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,16 +54,29 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
+
+    //  Read JWT from HttpOnly Cookie
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            if (context.Request.Cookies.ContainsKey("token"))
+            {
+                context.Token = context.Request.Cookies["token"];
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 // Enable CORS
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(MyAllowSpecificOrigins,
+    options.AddPolicy("AllowFrontend",
                           policy =>
                           {
-                              policy.WithOrigins("http://localhost:3000")
+                              policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+                                                  .AllowCredentials()
                                                   .AllowAnyHeader()
                                                   .AllowAnyMethod();
                           });
@@ -93,7 +106,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -49,15 +49,16 @@ namespace DevSpot.Services
             return GenerateTokenString(identityUser, userRoles);
         }
 
-        public string GenerateTokenString(IdentityUser user, IList<string> userRoles)
+        private string GenerateTokenString(IdentityUser user, IList<string> userRoles)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
             };
             claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

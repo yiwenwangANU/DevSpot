@@ -30,7 +30,16 @@ namespace DevSpot.Controllers
             var token = await _authService.Login(dto);
             if (token != null)
             {
-                return Ok(new { token, userName=dto.Email });
+                // Set HttpOnly cookie
+                Response.Cookies.Append("token", token, new CookieOptions
+                {
+                    HttpOnly = true,  // ✅ JS can't read it
+                    Secure = true,    // ✅ only sent via HTTPS
+                    SameSite = SameSiteMode.None, // ✅ allow cross-site cookies
+                    Expires = DateTime.UtcNow.AddMinutes(15) // match token expiry
+                });
+
+                return Ok();
             } 
             return Unauthorized();
         }
