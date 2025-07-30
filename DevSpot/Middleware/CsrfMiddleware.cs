@@ -8,6 +8,14 @@
 
         public async Task Invoke(HttpContext context)
         {
+            // Skip CSRF check for login & register
+            if (context.Request.Path.StartsWithSegments("/api/Auth/Login") ||
+                context.Request.Path.StartsWithSegments("/api/Auth/Register"))
+            {
+                await _next(context);
+                return;
+            }
+
             if (HttpMethods.IsPost(context.Request.Method) ||
                 HttpMethods.IsPut(context.Request.Method) ||
                 HttpMethods.IsDelete(context.Request.Method))

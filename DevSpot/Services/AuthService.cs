@@ -32,7 +32,7 @@ namespace DevSpot.Services
             if (!result.Succeeded)
                 return false;
 
-            var role = dto.IsJobSeeker ? Roles.JOB_SEEKER : Roles.ADMIN;
+            var role = dto.IsJobSeeker ? Roles.JOB_SEEKER : Roles.EMPLOYER;
             var roleResult = await _userManager.AddToRoleAsync(identityUser, role);
             if (!roleResult.Succeeded)
                 return false;

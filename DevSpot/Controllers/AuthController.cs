@@ -41,6 +41,15 @@ namespace DevSpot.Controllers
                     Expires = DateTime.UtcNow.AddMinutes(15) // match token expiry
                 });
 
+                // ✅ CSRF token (readable by JS)
+                var csrfToken = Guid.NewGuid().ToString("N");
+                Response.Cookies.Append("XSRF-TOKEN", csrfToken, new CookieOptions
+                {
+                    HttpOnly = false, // ✅ must be accessible by JS
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTime.UtcNow.AddMinutes(15)
+                });
                 return Ok(new { email= dto.Email });
             } 
             return Unauthorized();
