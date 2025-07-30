@@ -1,6 +1,8 @@
 ﻿using DevSpot.Models.Dtos;
 using DevSpot.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DevSpot.Controllers
 {
@@ -39,9 +41,22 @@ namespace DevSpot.Controllers
                     Expires = DateTime.UtcNow.AddMinutes(15) // match token expiry
                 });
 
-                return Ok();
+                return Ok(new { email= dto.Email });
             } 
             return Unauthorized();
         }
+
+        [Authorize]
+        [HttpGet("Profile")]
+        public IActionResult Profile()
+        {
+            return Ok(new
+            {
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                UserName = User.FindFirstValue(ClaimTypes.Name),
+                Roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList()
+            });
+        }
+
     }
 }

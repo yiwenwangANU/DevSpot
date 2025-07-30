@@ -1,5 +1,6 @@
 using DevSpot.Constants;
 using DevSpot.Data;
+using DevSpot.Middleware;
 using DevSpot.Models.Entities;
 using DevSpot.Repositories;
 using DevSpot.Services;
@@ -107,6 +108,7 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
+app.UseMiddleware<CsrfMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
